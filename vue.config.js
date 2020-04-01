@@ -1,7 +1,5 @@
 const path = require('path')
 const webpack = require('webpack')
-const merge = require("webpack-merge")
-const tsImportPluginFactory = require("ts-import-plugin")
 const ipConfig = require('./config/ip.config')
 
 function resolve (dir) {
@@ -43,28 +41,6 @@ const vueConfig = {
   chainWebpack: (config) => {
     config.resolve.alias
       .set('@$', resolve('src'))
-
-    config.module
-      .rule("ts")
-      .use("ts-loader")
-      .tap(options => {
-        options = merge(options, {
-          transpileOnly: true,
-          getCustomTransformers: () => ({
-            before: [
-              tsImportPluginFactory({
-                libraryName: "vant",
-                libraryDirectory: "es",
-                style: true
-              })
-            ]
-          }),
-          compilerOptions: {
-            module: "es2015"
-          }
-        })
-        return options
-      })
 
     const svgRule = config.module.rule('svg')
     svgRule.uses.clear()

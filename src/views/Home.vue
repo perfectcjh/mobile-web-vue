@@ -1,19 +1,17 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <MapView />
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
-import HelloWorld from '@/components/HelloWorld.vue'
+<script>
+import MapView from '@/components/Map/MapView.vue'
 
-@Component({
-  components: {
-    HelloWorld
-  }
-})
-export default class Home extends Vue {
+export default {
+  components: { MapView }
 }
 </script>
+
+<style lang="stylus" scoped>
+
+</style>>
