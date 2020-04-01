@@ -15,7 +15,7 @@ export default {
       aMap: null
     }
   },
-  mounted() {
+  mounted () {
     console.log(111)
     this.$nextTick(() => {
       this.initMap()
@@ -23,22 +23,23 @@ export default {
   },
   methods: {
     initMap () {
-    console.log(111)
-    this.aMap = VueAMap.initAMapApiLoader({
-      key: '75aa8dbb1c8754889515b823b9eb92ab',
-      plugin: [
-        'AMap.Autocomplete',
-        'AMap.PlaceSearch',
-        'AMap.Scale',
-        'AMap.OverView',
-        'AMap.ToolBar',
-        'AMap.MapType',
-        'AMap.PolyEditor',
-        'AMap.CircleEditor',
-        'AMap.Geolocation'
-      ],
-      uiVersion: '1.0'
-    })
+      console.log(111)
+      this.aMap = VueAMap.initAMapApiLoader({
+        key: '75aa8dbb1c8754889515b823b9eb92ab',
+        plugin: [
+          'AMap.Autocomplete',
+          'AMap.PlaceSearch',
+          'AMap.Scale',
+          'AMap.OverView',
+          'AMap.ToolBar',
+          'AMap.MapType',
+          'AMap.PolyEditor',
+          'AMap.CircleEditor',
+          'AMap.Geolocation'
+        ],
+        uiVersion: '1.0'
+      })
+    }
   }
 }
 </script>
@@ -55,4 +56,4 @@ export default {
     background-color #333333
   }
 }
-</style>>
+</style>
