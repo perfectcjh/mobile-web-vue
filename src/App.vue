@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link>
-    </div>
+    <router-link to="/">Home</router-link>
     <router-view />
   </div>
 </template>
@@ -14,5 +12,8 @@
   -moz-osx-font-smoothing grayscale
   text-align center
   color #2c3e50
-  margin-top 60px
+  width 100%
+  min-height 100%
+  background-color #f5f5f5
+  line-height 1
 </style>

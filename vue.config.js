@@ -11,6 +11,8 @@ const isProd = process.env.NODE_ENV === 'production'
 const assetsCDN = {
   // webpack build externals
   externals: {
+    'AMap': 'AMap',
+    'AMapUI': 'AMapUI'
     // vue: 'Vue',
     // 'vue-router': 'VueRouter',
     // vuex: 'Vuex',
@@ -28,6 +30,11 @@ const assetsCDN = {
 
 // vue.config.js
 const vueConfig = {
+  // 基本路径
+  publicPath: './',
+  // 输出文件目录
+  outputDir: 'dist',
+
   configureWebpack: {
     // webpack plugins
     plugins: [
@@ -35,7 +42,7 @@ const vueConfig = {
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
     ],
     // if prod, add externals
-    externals: isProd ? assetsCDN.externals : {}
+    externals: isProd ? assetsCDN.externals : assetsCDN.externals
   },
 
   chainWebpack: (config) => {
