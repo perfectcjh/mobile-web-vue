@@ -5,10 +5,24 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '',
+    name: '',
+    redirect: '/taskDetailMap'
+  },
+  {
     path: '/',
+    name: '',
+    redirect: '/taskDetailMap'
+  },
+  {
+    path: '/home',
     name: 'Home',
-    component: () =>
-      import(/* webpackChunkName: "about" */ '../views/Home.vue')
+    component: () => import('../views/home/Home.vue')
+  },
+  {
+    path: '/taskDetailMap',
+    name: 'TaskDetailMap',
+    component: () => import('../views/task/TaskDetailMap.vue')
   }
 ]
 
