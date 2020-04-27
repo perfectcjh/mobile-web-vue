@@ -1,21 +1,5 @@
 import axios from 'axios'
-
-/**
- * AMap基础配置
- */
-const AMapConfig = {
-  baseUrl: 'https://restapi.amap.com/v3',
-  key: '75aa8dbb1c8754889515b823b9eb92ab',
-  sign: 'ee2b3834bf86de9f4f9867f72efac86d'
-}
-
-/**
- * AMap Url
- */
-const AMapUrl = {
-  // 驾车路径规划
-  driving: AMapConfig.baseUrl + '/direction/driving'
-}
+import { AMapWebConfig, AMapUrl } from './amap-constant'
 
 /**
  * 高德Get请求统一调用方法
@@ -23,8 +7,8 @@ const AMapUrl = {
  */
 const amapRequest = (option) => {
   const params = Object.assign({
-    key: AMapConfig.key,
-    sig: AMapConfig.sign,
+    key: AMapWebConfig.key,
+    sig: AMapWebConfig.sign,
     output: 'JSON'
   }, option.params)
   return new Promise((resolve) => {
@@ -85,6 +69,22 @@ const getFastDrivingPath = async (option) => {
   })
 }
 
+const geocoder = async (option) => {
+  const params = {
+    city: option.city || '',
+    address: option.address
+  }
+  const { code, data, message } = await amapRequest({ url: AMapUrl.geocoder, params: params })
+  return new Promise((resolve) => {
+    if (code === 200) {
+      resolve({ code: code, data: data, message: message })
+    } else {
+      resolve({ code: code, data: null, message: message })
+    }
+  })
+}
+
 export default {
-  getFastDrivingPath
+  getFastDrivingPath,
+  geocoder
 }

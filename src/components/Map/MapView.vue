@@ -7,22 +7,47 @@
 <script>
 // import AMap from 'AMap'
 import AMapLoader from '@amap/amap-jsapi-loader'
-import AmapApi from '@/utils/amap-api.js'
+// import AmapApi from '@/module/amap/amap-api.js'
+import AMapHandler from '@/module/amap/amap-handler.js'
 
 export default {
+  // props: {
+  //   startData: {
+  //     type: Object,
+  //     default: () => {
+  //       return {
+  //         title: '浙江省宁波市',
+  //         address: '浙江省宁波市海曙区天一广场'
+  //       }
+  //     }
+  //   },
+  //   endData: {
+  //     type: Object,
+  //     default: () => {
+  //       return {
+  //         title: '上海市浦东新区',
+  //         address: '上海市浦东新区锦绣东路700号'
+  //       }
+  //     }
+  //   }
+  // },
   data () {
     return {
       AMap: null,
       map: null,
       startPoint: {
-        latitude: 37.5,
-        longitude: 118.2,
-        title: '山东济南'
+        isFinsh: false,
+        latitude: 0,
+        longitude: 0,
+        title: '',
+        address: ''
       },
       endPoint: {
-        latitude: 31.20,
-        longitude: 121.52,
-        title: '上海浦东'
+        isFinsh: false,
+        latitude: 0,
+        longitude: 0,
+        title: '',
+        address: ''
       },
       polyline: []
     }
@@ -39,35 +64,101 @@ export default {
     }
   },
   mounted () {
-    this.initMap()
+    // this.initMap()
   },
   methods: {
+    initData (option) {
+      this.startPoint = Object.assign({}, this.startPoint, option.startData)
+      this.endPoint = Object.assign({}, this.endPoint, option.endData)
+
+      this.initMap()
+    },
     async initMap () {
       const plugins = [
-        'AMap.ToolBar',
-        'AMap.Scale',
-        'AMap.Marker',
-        'AMap.PolylineEditor',
-        'AMap.Geolocation'
+        // 'AMap.ToolBar', // 工具
+        // 'AMap.Scale', // 比例尺
+        'AMap.Marker', // 点标记
+        'AMap.PolylineEditor', // 矢量图
+        'AMap.Geolocation', // 定位
+        'AMap.Geocoder', // 地理编码
+        'AMap.Driving' // 路径规划
       ]
       const params = {
-        key: '75aa8dbb1c8754889515b823b9eb92ab',
+        key: '0d6f61194edf418d0f772089bd1e4b4e',
         version: '2.0',
         plugins: plugins
       }
       const AMap = await AMapLoader.load(params)
       this.AMap = AMap
       this.map = new AMap.Map('amap__amap-container', {
-        center: [this.centerPoint.longitude, this.centerPoint.latitude],
+        // center: [this.centerPoint.longitude, this.centerPoint.latitude],
         resizeEnable: true,
         zooms: [5, 18],
         zoom: 5,
-        viewMode: '2D'
+        viewMode: '2D',
+        mapStyle: 'amap://styles/b89c88006c40bdb8d2d6e2ac37388443'
       })
-      this.map.addControl(new AMap.ToolBar())
-      this.map.addControl(new AMap.Scale())
+      // this.map.addControl(new AMap.ToolBar())
+      // this.map.addControl(new AMap.Scale())
+
+      this.getCurrentLocation()
+      this.getStartLocation()
+      this.getEndLocation()
+    },
+    handleGetLocationFinish () {
+      if (!this.startPoint.isFinsh || !this.endPoint.isFinsh) {
+        return
+      }
+      this.map.setCenter([this.centerPoint.longitude, this.centerPoint.latitude])
       this.addMarkers()
-      this.requestPath()
+      this.getFastPath()
+    },
+    async getCurrentLocation () {
+      const { code, data } = await AMapHandler.getCurrentLocation(this.AMap)
+      const currentPosition = data
+      this.$emit('locationChange', data)
+      if (code === 200) {
+        const res = await AMapHandler.regeocoderLocation(data, this.AMap)
+        if (res.code === 200) {
+          currentPosition.address = res.data.address
+          this.$emit('addressChange', data)
+        }
+      }
+    },
+    async getStartLocation () {
+      const params = {
+        address: this.startPoint.address
+      }
+      const { code, data } = await AMapHandler.geocoderAddress(params, this.AMap)
+      if (code === 200) {
+        this.startPoint.latitude = data.latitude
+        this.startPoint.longitude = data.longitude
+        this.startPoint.isFinsh = true
+        this.handleGetLocationFinish()
+      }
+    },
+    async getEndLocation () {
+      const params = {
+        address: this.endPoint.address
+      }
+      const { code, data } = await AMapHandler.geocoderAddress(params, this.AMap)
+      if (code === 200) {
+        this.endPoint.latitude = data.latitude
+        this.endPoint.longitude = data.longitude
+        this.endPoint.isFinsh = true
+        this.handleGetLocationFinish()
+      }
+    },
+    async getFastPath () {
+      const params = {
+        startPoint: this.startPoint,
+        endPoint: this.endPoint
+      }
+      const { code, data } = await AMapHandler.getFastPathPoint(params, this.AMap)
+      if (code === 200) {
+        this.polyline = data
+        this.addPolyline()
+      }
     },
     addMarkers () {
       const startMarker = new this.AMap.Text({
@@ -90,22 +181,11 @@ export default {
       })
       const polyline = new this.AMap.Polyline({
         path: path,
-        strokeWeight: 10,
+        strokeWeight: 6,
         strokeColor: '#00ADC7',
-        lineJoin: 'round'
+        strokeOpacity: 1
       })
       this.map.add(polyline)
-    },
-    async requestPath () {
-      const params = {
-        startPoint: this.startPoint,
-        endPoint: this.endPoint
-      }
-      const { code, data } = await AmapApi.getFastDrivingPath(params)
-      if (code === 200 && data) {
-        this.polyline = data
-        this.addPolyline()
-      }
     }
   }
 }

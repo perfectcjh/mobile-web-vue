@@ -4,39 +4,39 @@
       <div class="location-search-icon">
         <img src="../../../assets/common/icon-location-gray.png" mode="aspectFit"></img>
       </div>
-      <div class="location-search-text">请输入位置信息</div>
+      <div class="location-search-text">{{ address || '位置信息' }}</div>
     </div>
     <div class="item-view-title">货物信息</div>
     <div class="item-view">
       <div class="item-view-header">
-        <div class="order-number">订单号：D201345333455</div>
-        <div class="order-time">2020-04-17 09:00</div>
+        <div class="order-number">订单号：{{ itemData.orderNo }}</div>
+        <div class="order-time">{{ itemData.pickDateTime }}</div>
       </div>
       <div class="item-view-sep-line"></div>
       <div class="item-view-content">
         <div class="order-location">
           <div class="order-location-tag from">提</div>
-          <div class="order-location-text">上海市浦东新区花木街道兰花路333号</div>
+          <div class="order-location-text">{{ itemData.pickTotalAddress }}</div>
         </div>
         <div class="order-location">
           <div class="order-location-tag to">送</div>
-          <div class="order-location-text">上海市浦东新区花木街道兰花路333号</div>
+          <div class="order-location-text">{{ itemData.receiptTotalAddress }}</div>
         </div>
         <div class="order-info-tag-box">
-          <div v-for="(item, index) in orderInfoTags" :key="index" class="order-info-tag-item">{{ item }}</div>
+          <div v-for="(item, index) in itemData.orderInfoTags" :key="index" class="order-info-tag-item">{{ item }}</div>
         </div>
         <div class="detail-item-phone-box">
-          <div class="phone-box">
+          <div class="phone-box" @click.stop="makePhoneCallToPicker">
             <div class="phone-icon">
               <img src="../../../assets/common/icon-phone-theme.png" mode="aspectFit"></img>
             </div>
-            <div>发货人李先生</div>
+            <div>发货人{{ itemData.picker }}</div>
           </div>
-          <div class="phone-box">
+          <div class="phone-box" @click.stop="makePhoneCallToReceipter">
             <div class="phone-icon">
               <img src="../../../assets/common/icon-phone-orange.png" mode="aspectFit"></img>
             </div>
-            <div>收货人赵先生</div>
+            <div>收货人{{ itemData.receipter }}</div>
           </div>
         </div>
       </div>
@@ -47,6 +47,10 @@
 <script>
 export default {
   props: {
+    address: {
+      type: String,
+      default: ''
+    },
     itemData: {
       type: Object,
       default: () => {}
@@ -56,12 +60,27 @@ export default {
     return {
     }
   },
-  computed: {
-    orderInfoTags () {
-      return ['零担运输/木材', '零担运输/木材', '零担运输/木材', '零担运输/木材']
-    }
-  },
   methods: {
+    makePhoneCallToPicker () {
+      this.$native.postMessage({
+        data: {
+          action: 'makePhoneCall',
+          params: {
+            phoneNumber: this.itemData.pickerPhone
+          }
+        }
+      })
+    },
+    makePhoneCallToReceipter () {
+      this.$native.postMessage({
+        data: {
+          action: 'makePhoneCall',
+          params: {
+            phoneNumber: this.itemData.receipterPhone
+          }
+        }
+      })
+    }
   }
 }
 </script>

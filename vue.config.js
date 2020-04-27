@@ -1,6 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
-const ipConfig = require('./config/ip.config')
+// const ipConfig = require('./config/ip.config')
 
 function resolve (dir) {
   return path.join(__dirname, dir)
@@ -11,6 +11,7 @@ const isProd = process.env.NODE_ENV === 'production'
 const assetsCDN = {
   // webpack build externals
   externals: {
+    uni: 'uni'
     // vue: 'Vue',
     // 'vue-router': 'VueRouter',
     // vuex: 'Vuex',
@@ -19,10 +20,11 @@ const assetsCDN = {
   css: [],
   // https://unpkg.com/browse/vue@2.6.10/
   js: [
-    // '//cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js',
-    // '//cdn.jsdelivr.net/npm/vue-router@3.1.3/dist/vue-router.min.js',
-    // '//cdn.jsdelivr.net/npm/vuex@3.1.1/dist/vuex.min.js',
-    // '//cdn.jsdelivr.net/npm/axios@0.19.0/dist/axios.min.js'
+    // 'https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js',
+    // 'https://cdn.jsdelivr.net/npm/vue-router@3.1.3/dist/vue-router.min.js',
+    // 'https://cdn.jsdelivr.net/npm/vuex@3.1.1/dist/vuex.min.js',
+    // 'https://cdn.jsdelivr.net/npm/axios@0.19.0/dist/axios.min.js'
+    // 'https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.0.1.52.js'
   ]
 }
 
@@ -93,23 +95,23 @@ const vueConfig = {
   },
 
   devServer: {
-    port: 10000,
-    proxy: {
-      [ipConfig.echem_user]: {
-        target: 'http://10.2.11.183:10144/',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + ipConfig.echem_user]: ''
-        }
-      },
-      [ipConfig.echem_gateWay]: {
-        target: 'http://10.2.11.183:10133/',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + ipConfig.echem_gateWay]: ''
-        }
-      }
-    }
+    port: 10000
+    // proxy: {
+    //   [ipConfig.echem_user]: {
+    //     target: 'http://10.2.11.183:10144/',
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       ['^' + ipConfig.echem_user]: ''
+    //     }
+    //   },
+    //   [ipConfig.echem_gateWay]: {
+    //     target: 'http://10.2.11.183:10133/',
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       ['^' + ipConfig.echem_gateWay]: ''
+    //     }
+    //   }
+    // }
   },
 
   // disable source map in production

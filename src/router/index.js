@@ -7,12 +7,12 @@ const routes = [
   {
     path: '',
     name: '',
-    redirect: '/taskDetailMap'
+    redirect: '/home'
   },
   {
     path: '/',
     name: '',
-    redirect: '/taskDetailMap'
+    redirect: '/home'
   },
   {
     path: '/home',
