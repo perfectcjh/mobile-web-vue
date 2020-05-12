@@ -2,9 +2,9 @@
   <div class="task-detail-map-info-view-container">
     <div class="location-search-view">
       <div class="location-search-icon">
-        <img src="../../../assets/common/icon-location-gray.png" mode="aspectFit"></img>
+        <img src="../../../assets/common/icon-location-gray.png" />
       </div>
-      <div class="location-search-text">{{ address || '位置信息' }}</div>
+      <div class="location-search-text">{{ address || '点击获取位置信息' }}</div>
     </div>
     <div class="item-view-title">货物信息</div>
     <div class="item-view">
@@ -61,23 +61,22 @@ export default {
     }
   },
   methods: {
+    handleLocationClick () {
+      this.$emit('locationClick')
+    },
     makePhoneCallToPicker () {
       this.$native.postMessage({
-        data: {
-          action: 'makePhoneCall',
-          params: {
-            phoneNumber: this.itemData.pickerPhone
-          }
+        action: 'makePhoneCall',
+        params: {
+          phoneNumber: this.itemData.pickerPhone
         }
       })
     },
     makePhoneCallToReceipter () {
       this.$native.postMessage({
-        data: {
-          action: 'makePhoneCall',
-          params: {
-            phoneNumber: this.itemData.receipterPhone
-          }
+        action: 'makePhoneCall',
+        params: {
+          phoneNumber: this.itemData.receipterPhone
         }
       })
     }

@@ -1,4 +1,5 @@
-import { Toast } from 'vant'
+// import { Toast } from 'vant'
+import native from '@/module/native/native'
 
 // http状态吗
 const HttpStatus = {
@@ -31,12 +32,13 @@ const HttpRequestLog = (url, data, res) => {
 const ShowErrorMessage = (message) => {
   if (!message) { return }
   setTimeout(() => {
-    Toast(message)
+    // Toast(message)
     // uni.showToast({
     // 	title: message,
     // 	icon: 'none',
     // 	duration: 1500
     // })
+    native.toast({ message: message })
   })
 }
 

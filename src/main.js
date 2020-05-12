@@ -5,7 +5,7 @@ import 'lib-flexible'
 import router from './router'
 import store from './store'
 import api from '@/api'
-import uni from 'uni'
+import native from './module/native/native'
 import Vant from 'vant'
 import 'vant/lib/index.css'
 
@@ -14,7 +14,7 @@ Vue.use(Vant)
 Vue.config.productionTip = false
 
 Vue.prototype.$api = api
-Vue.prototype.$native = uni
+Vue.prototype.$native = native
 
 new Vue({
   router,

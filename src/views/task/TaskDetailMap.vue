@@ -29,6 +29,7 @@
       <task-detail-map-info-view
         :address="currentAddress"
         :itemData="pageData"
+        @locationClick="getLocation"
       />
     </div>
     <div class="task-detail-map-action-view">
@@ -78,10 +79,32 @@ export default {
     this.loadData()
   },
   methods: {
+    getLocation () {
+      this.$refs.mapView.getCurrentLocation()
+    },
+    checkLocation () {
+      if (!this.locationObj.latitude || !this.locationObj.longitude) {
+        this.$native.postMessage({
+          data: {
+            action: 'showModal',
+            params: {
+              title: '提示',
+              content: '未能获取位置信息，请点击获取位置后重试。如未授权，请到 设置 中打开定位权限后重试',
+              showCancel: false
+            }
+          }
+        })
+        // this.$dialog.alert({
+        //   message: '未能获取位置信息，请点击获取位置后重试。如未授权，请到 设置 中打开定位权限后重试'
+        // })
+        return false
+      }
+      return true
+    },
     async loadData () {
       const params = {
         id: this.orderId,
-        token: this.token
+        token: this.token || ''
       }
       this.$toast.loading()
       const { code, data } = await this.$api.getOrderDetail(params)
@@ -112,35 +135,23 @@ export default {
       this.isShowDetailInfo = !this.isShowDetailInfo
     },
     handleBackClick () {
-      this.$native.postMessage({
-        data: {
-          action: 'navigateBack',
-          params: {}
-        }
-      })
+      this.$native.navigateBack()
     },
     handleSignatureClick () {
-      this.$native.postMessage({
-        data: {
-          action: 'navigateTo',
-          params: {
-            url: `/pages/driver/task/TaskCheckFinish?id=${this.pageData.orderId}`
-          }
-        }
+      if (!this.checkLocation()) { return }
+      this.$native.navigateTo({
+        url: `/pages/driver/task/TaskCheckFinish?id=${this.pageData.orderId}&longitude=${this.locationObj.longitude}&latitude=${this.locationObj.latitude}&location=${this.currentAddress}`
       })
     },
     handleUploadClick () {
+      if (!this.checkLocation()) { return }
       const subIds = this.pageData.detailList.map(el => el.orderId)
-      this.$native.postMessage({
-        data: {
-          action: 'navigateTo',
-          params: {
-            url: `/pages/driver/task/UploadTaskPhoto?id=${this.pageData.orderId}&subIds=${subIds.join(',')}&logisticsStatus=${this.pageData.logisticsStatus}&longitude=${this.locationObj.longitude}&latitude=${this.locationObj.latitude}`
-          }
-        }
+      this.$native.navigateTo({
+        url: `/pages/driver/task/UploadTaskPhoto?id=${this.pageData.orderId}&subIds=${subIds.join(',')}&logisticsStatus=${this.pageData.logisticsStatus}&longitude=${this.locationObj.longitude}&latitude=${this.locationObj.latitude}&location=${this.currentAddress}`
       })
     },
     handleFinishClick () {
+      if (!this.checkLocation()) { return }
       if (this.pageData.logisticsStatus === 'take_order') {
         this.requestPickupFinsh()
       }
@@ -154,6 +165,7 @@ export default {
         waybillDetailIds: this.pageData.detailList.map(el => el.orderId),
         latitude: this.locationObj.latitude,
         longitude: this.locationObj.longitude,
+        location: this.currentAddress,
         fileCode: this.fileCode,
         token: this.token
       }
@@ -161,8 +173,8 @@ export default {
       const { code } = await this.$api.orderPickupCompleted(params)
       this.$toast.clear()
       if (code === 200) {
-        this.$toast('提货成功')
-        this.loadData()
+        this.$native.toast('提货成功')
+        this.handleSuccess()
       }
     },
     // 卸货完成
@@ -172,6 +184,7 @@ export default {
         waybillDetailIds: this.pageData.detailList.map(el => el.orderId),
         latitude: this.locationObj.latitude,
         longitude: this.locationObj.longitude,
+        location: this.currentAddress,
         fileCode: this.fileCode,
         token: this.token
       }
@@ -179,9 +192,17 @@ export default {
       const { code } = await this.$api.orderReceiptCompleted(params)
       this.$toast.clear()
       if (code === 200) {
-        this.$toast('卸货成功')
-        this.loadData()
+        this.$native.toast('卸货成功')
+        this.handleSuccess()
       }
+    },
+    handleSuccess () {
+      setTimeout(() => {
+        this.$native.notification({
+          name: 'taskNeedRefresh'
+        })
+        this.$native.navigateBack()
+      }, 1500)
     }
   }
 }
@@ -215,11 +236,11 @@ export default {
     padding 0px
 
     .nav-bar {
-      // position fixed
-      // top 0px
-      // left 0px
-      // right 0px
-      // z-index 998
+      position fixed
+      top 0px
+      left 0px
+      right 0px
+      z-index 998
     }
 
     .map-container {
