@@ -38,7 +38,7 @@ const ShowErrorMessage = (message) => {
     // 	icon: 'none',
     // 	duration: 1500
     // })
-    native.toast({ message: message })
+    native.toast(message)
   })
 }
 

@@ -32,6 +32,7 @@ const httpRequestData = (option) => {
 const httpRequest = (option) => {
   const headers = httpRequestHeader(option)
   const data = httpRequestData(option)
+  headers.token = '28b4b38fadc62ee8e4e163e26fde74a2'
   if (data.token) {
     headers.token = data.token
   }

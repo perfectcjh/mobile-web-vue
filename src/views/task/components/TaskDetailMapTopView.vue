@@ -22,7 +22,7 @@
 
 <style lang="stylus" scoped>
 	.task-detail-map-top-view-container {
-		box-sizing border-box
+		box-sizing: border-box;
 		width: 100%;
 		padding: 0px 30px;
 

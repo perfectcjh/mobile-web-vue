@@ -2,12 +2,12 @@ import httpRequest from '@/module/request/http-request.js'
 
 const ipConfig = require('../config/ip.config.js')
 const api = {
-  getOrderList: ipConfig.echem_gateWay + '/api/forward/waybillDepart/getPage',
-  getOrderDetail: ipConfig.echem_gateWay + '/api/forward/waybillDepart/getDetail',
-  taskOrder: ipConfig.echem_gateWay + '/api/forward/driverOperate/takingOrdersByDriver',
-  orderPickupCompleted: ipConfig.echem_gateWay + '/api/forward/driverOperate/pickupCompleted',
-  orderReceiptCompleted: ipConfig.echem_gateWay + '/api/forward/driverOperate/arriveDestination',
-  orderSignCompleted: ipConfig.echem_gateWay + '/api/forward/driverOperate/signCompleted'
+  getOrderList: ipConfig.api_puds + '/api/forward/waybillDepart/getPage',
+  getOrderDetail: ipConfig.api_puds + '/api/forward/waybillDepart/getDetail',
+  taskOrder: ipConfig.api_puds + '/api/forward/driverOperate/takingOrdersByDriver',
+  orderPickupCompleted: ipConfig.api_puds + '/api/forward/driverOperate/pickupCompleted',
+  orderReceiptCompleted: ipConfig.api_puds + '/api/forward/driverOperate/arriveDestination',
+  orderSignCompleted: ipConfig.api_puds + '/api/forward/driverOperate/signCompleted'
 }
 
 // 订单列表

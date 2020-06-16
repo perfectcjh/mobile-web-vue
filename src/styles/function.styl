@@ -1,0 +1,34 @@
+wh(value) {
+  width: value;
+  height: value;
+}
+
+// 文字换行
+text-over(num) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: num;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+
+// 设置圆角
+order-radius(num) {
+  border-radius: num;
+  overflow: hidden;
+}
+
+bg-img(url,size) {
+  background: no-repeat url(url) center;
+  -webkit-background-size: size;
+  background-size: size;
+}
+
+bg-img-contain(url) {
+  bg-img(url, 'contain');
+}
+
+bg-img-cover(url) {
+  bg-img(url, 'cover');
+}

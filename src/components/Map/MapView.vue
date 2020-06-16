@@ -193,13 +193,13 @@ export default {
 
 <style lang="stylus" scoped>
 .amap__container {
-  width 100%
-  height 100%
+  width: 100%;
+  height: 100%;
 
   .amap__amap-container {
-    width 100%
-    height 1000px
-    background-color $color-bg
+    width: 100%;
+    height: 1000px;
+    background-color: $color-bg;
   }
 }
 </style>

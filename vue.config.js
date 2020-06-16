@@ -77,38 +77,30 @@ const vueConfig = {
 
   css: {
     loaderOptions: {
+      // sass: {
+      //   prependData: `@import "~@/styles/global.scss";`
+      // },
       stylus: {
         import: '~@/styles/global.styl'
       }
-      // less: {
-      //   modifyVars: {
-      //     // less vars，customize ant design theme
-
-      //     // 'primary-color': '#F5222D',
-      //     // 'link-color': '#F5222D',
-      //     // 'border-radius-base': '4px'
-      //   },
-      //   // DO NOT REMOVE THIS LINE
-      //   javascriptEnabled: true
-      // }
     }
   },
 
   devServer: {
     port: 10000
     // proxy: {
-    //   [ipConfig.echem_user]: {
+    //   [ipConfig.api_common]: {
     //     target: 'http://10.2.11.183:10144/',
     //     changeOrigin: true,
     //     pathRewrite: {
-    //       ['^' + ipConfig.echem_user]: ''
+    //       ['^' + ipConfig.api_common]: ''
     //     }
     //   },
-    //   [ipConfig.echem_gateWay]: {
+    //   [ipConfig.api_puds]: {
     //     target: 'http://10.2.11.183:10133/',
     //     changeOrigin: true,
     //     pathRewrite: {
-    //       ['^' + ipConfig.echem_gateWay]: ''
+    //       ['^' + ipConfig.api_puds]: ''
     //     }
     //   }
     // }

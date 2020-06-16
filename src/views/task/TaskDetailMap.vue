@@ -1,10 +1,9 @@
 <template>
   <div class="task-detail-map-container">
-    <div class="nav-bar">
+    <div class="nav-bar" :style="navbarStyle">
       <van-nav-bar
         title="任务详情"
         left-arrow
-        fixed
         :z-index="998"
         @click-left="handleBackClick"
       />
@@ -19,7 +18,7 @@
     <!-- <div class="task-detail-map-top"> -->
     <!-- <task-detail-map-top-view /> -->
     <!-- </div> -->
-    <div class="task-detail-map-info-container" :style="detailInfoStyle">
+    <div class="task-detail-map-info-container" :style="detailInfoStyle" @touchstart.stop="handleTouchStart" @touchmove.stop="handleTouchMove" @touchend.stop="handleTouchEnd">
       <div class="task-detail-map-info-button" @click.stop="handleInfoClick">
         <div class="task-detail-map-info-button-img">
           <img v-if="!isShowDetailInfo" src="../../assets/common/icon-view-show.png" mode="aspectFit" />
@@ -52,6 +51,7 @@ export default {
   components: { TaskDetailMapTopView, TaskDetailMapInfoView, MapView },
   data () {
     return {
+      platform: '',
       isShowDetailInfo: false,
       orderId: '',
       fileCode: '',
@@ -61,45 +61,95 @@ export default {
       locationObj: {
         longitude: '',
         latitude: ''
+      },
+      touchObj: {
+        isTouch: false,
+        startY: 0,
+        currentY: 0,
+        moveY: 0,
+        detailHeight: 0
       }
     }
   },
   computed: {
     detailInfoStyle () {
-      return this.isShowDetailInfo ? 'height: 85%;' : 'height: 42%;'
+      const { isTouch, moveY, detailHeight } = this.touchObj
+      if (isTouch && (moveY > 50 || moveY < -50)) {
+        return `height: ${detailHeight}px`
+      } else {
+        return this.isShowDetailInfo ? 'height: 85%;' : 'height: 42%;'
+      }
+    },
+    navbarStyle () {
+      const style = this.platform === 'android' ? 'padding-top: 22px;' : 'padding-top: 0px;'
+      return style
     }
   },
   created () {
     this.$native.getEnv((res) => {
       console.log('UniAppJSBridgeReady', res)
     })
+    this.platform = this.$route.query.platform
     this.orderId = this.$route.query.id
     this.token = this.$route.query.token
     console.log(JSON.stringify(this.$route.query))
+  },
+  mounted () {
     this.loadData()
   },
   methods: {
+    handleTouchStart (event) {
+      this.touchObj.isTouch = true
+      if (!event.touches) { return }
+      const touch = event.touches[0]
+      this.touchObj.startY = touch.clientY
+    },
+    handleTouchMove (event) {
+      if (!event.touches) { return }
+      const touch = event.touches[0]
+      const currentY = touch.clientY
+      const moveY = this.touchObj.currentY - this.touchObj.startY
+
+      const windowHeight = document.documentElement.clientHeight || document.body.clientHeight
+      const startHeight = this.isShowDetailInfo ? windowHeight * 0.85 : windowHeight * 0.42
+      let detailHeight = startHeight - moveY
+      if (detailHeight > windowHeight * 0.85) {
+        detailHeight = windowHeight * 0.85
+      }
+      if (detailHeight < windowHeight * 0.42) {
+        detailHeight = windowHeight * 0.42
+      }
+      console.log('moveY', moveY, 'height', detailHeight, 'windowHeight', windowHeight)
+
+      this.touchObj.currentY = currentY
+      this.touchObj.moveY = moveY
+      this.touchObj.detailHeight = detailHeight
+    },
+    handleTouchEnd () {
+      this.touchObj.isTouch = false
+      const { detailHeight } = this.touchObj
+
+      const windowHeight = document.documentElement.clientHeight || document.body.clientHeight
+      const flagHeight = windowHeight * 0.6
+      if (detailHeight > flagHeight) {
+        this.isShowDetailInfo = true
+      } else {
+        this.isShowDetailInfo = false
+      }
+    },
     getLocation () {
       this.$refs.mapView.getCurrentLocation()
     },
     checkLocation () {
-      if (!this.locationObj.latitude || !this.locationObj.longitude) {
-        this.$native.postMessage({
-          data: {
-            action: 'showModal',
-            params: {
-              title: '提示',
-              content: '未能获取位置信息，请点击获取位置后重试。如未授权，请到 设置 中打开定位权限后重试',
-              showCancel: false
-            }
-          }
-        })
-        // this.$dialog.alert({
-        //   message: '未能获取位置信息，请点击获取位置后重试。如未授权，请到 设置 中打开定位权限后重试'
-        // })
-        return false
+      if (this.locationObj) {
+        if (this.locationObj.latitude && this.locationObj.longitude) {
+          return true
+        }
       }
-      return true
+      this.$alert.show({
+        message: '未能获取位置信息，请点击获取位置后重试。如未授权，请到 设置 中打开定位权限后重试'
+      })
+      return false
     },
     async loadData () {
       const params = {
@@ -123,6 +173,18 @@ export default {
           startData: startData,
           endData: endData
         })
+      }
+    },
+    async reloadData () {
+      const params = {
+        id: this.orderId,
+        token: this.token || ''
+      }
+      this.$toast.loading()
+      const { code, data } = await this.$api.getOrderDetail(params)
+      this.$toast.clear()
+      if (code === 200) {
+        this.pageData = OrderDetailModel(data)
       }
     },
     handleAddressChange (address) {
@@ -153,10 +215,22 @@ export default {
     handleFinishClick () {
       if (!this.checkLocation()) { return }
       if (this.pageData.logisticsStatus === 'take_order') {
-        this.requestPickupFinsh()
+        this.$alert.show({
+          message: '确认提货完成？',
+          isConfirm: true,
+          onConfirm: () => {
+            this.requestPickupFinsh()
+          }
+        })
       }
       if (this.pageData.logisticsStatus === 'pickup') {
-        this.requestReceiptFinsh()
+        this.$alert.show({
+          message: '确认卸货完成？',
+          isConfirm: true,
+          onConfirm: () => {
+            this.requestReceiptFinsh()
+          }
+        })
       }
     },
     async requestPickupFinsh () {
@@ -193,7 +267,11 @@ export default {
       this.$toast.clear()
       if (code === 200) {
         this.$native.toast('卸货成功')
-        this.handleSuccess()
+        // this.handleSuccess()
+        this.reloadData()
+        setTimeout(() => {
+          this.handleSignatureClick()
+        }, 1500)
       }
     },
     handleSuccess () {
@@ -201,7 +279,9 @@ export default {
         this.$native.notification({
           name: 'taskNeedRefresh'
         })
-        this.$native.navigateBack()
+        this.$native.navigateBack({
+          delta: 3
+        })
       }, 1500)
     }
   }
@@ -210,10 +290,10 @@ export default {
 
 <style lang="stylus">
 .van-nav-bar {
-  height 92px
-  line-height 92px
+  height: 92px;
+  line-height: 92px;
   // background $linear-gradient-bg-theme
-  background-color $color-white
+  background-color: $color-white;
 }
 .van-nav-bar .van-icon {
   color: $color-text-black;
@@ -228,33 +308,36 @@ export default {
 
 <style lang="stylus" scoped>
   .task-detail-map-container {
-    position fixed
-    top 0px
-    bottom  0rx
-    left 0px
-    right 0px
-    padding 0px
+    position: fixed;
+    top: 0px;
+    bottom: 0rx;
+    left: 0px;
+    right: 0px;
+    padding: 0px;
 
     .nav-bar {
-      position fixed
-      top 0px
-      left 0px
-      right 0px
-      z-index 998
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      z-index: 998;
+      background-color: $color-white;
+      // background $linear-gradient-bg-theme
+      // padding-top 44px
     }
 
     .map-container {
-      position absolute
-      top 0px
-      left 0px
-      right 0px
-      bottom 0px
-      z-index 1
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      z-index: 1;
     }
 
     .task-detail-map-top {
       position: fixed;
-      top 30px
+      top: 30px;
 			left: 0px;
 			right: 0px;
 			height: 132px;
@@ -271,14 +354,14 @@ export default {
 			border-radius: 32px;
 
       .task-detail-map-info-button {
-        height 60px
-        display flex
-        justify-content center
-        align-items center
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
         .task-detail-map-info-button-img {
-          width 70px
-          height 15px
+          width: 70px;
+          height: 15px;
         }
       }
 		}
@@ -328,8 +411,8 @@ export default {
 					color: $color-white;
 					border-radius: $color-theme;
 					background: $linear-gradient-button-theme;
-					height: 88rpx;
-					line-height: 88rpx;
+					height: 88px;
+					line-height: 88px;
 				}
 			}
 		}

@@ -2,10 +2,11 @@ import httpRequest from '@/module/request/http-request.js'
 
 const ipConfig = require('../config/ip.config.js')
 const api = {
-  login: ipConfig.echem_user + '/biz/user/userLogin',
-  smsLogin: ipConfig.echem_user + '/biz/user/userMessageLogin',
-  getSmsCaptcha: ipConfig.echem_user + '/biz/usermessage/sendMessage',
-  getLoginUserInfo: ipConfig.echem_user + '/biz/user/getLoginUserInfo'
+  login: ipConfig.api_common + '/biz/user/userLogin',
+  smsLogin: ipConfig.api_common + '/biz/user/userMessageLogin',
+  getSmsCaptcha: ipConfig.api_common + '/biz/usermessage/sendMessage',
+  getLoginUserInfo: ipConfig.api_common + '/biz/user/getLoginUserInfo',
+  logout: ipConfig.api_common + '/biz/user/Logout'
 }
 
 // 登录

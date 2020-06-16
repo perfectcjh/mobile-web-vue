@@ -1,17 +1,18 @@
-const env = 'production'
-// const env = 'development'
+const globalConfig = require('./global.config.js')
 
 const ipConfig = {
   development: {
-    echem_user: 'http://10.2.11.183/api-common',
-    echem_gateWay: 'http://10.2.11.183/api-puds',
-    echem_upload: 'http://10.2.11.183/api-common-oss'
+    api_common: 'http://10.2.11.183/api-common',
+    api_puds: 'http://10.2.11.183/api-puds',
+    api_mars: 'http://10.2.11.183/api-mars',
+    api_upload: 'http://10.2.11.183/api-common-oss'
   },
   production: {
-    echem_user: 'https://api.echem56.com/api-common',
-    echem_gateWay: 'https://api.echem56.com/api-puds',
-    echem_upload: 'https://api.echem56.com/api-common-oss'
+    api_common: 'https://api.echem56.com/api-common',
+    api_puds: 'https://api.echem56.com/api-puds',
+    api_mars: 'https://api.echem56.com/api-mars',
+    api_upload: 'https://api.echem56.com/api-common-oss'
   }
 }
 
-module.exports = ipConfig[env]
+module.exports = ipConfig[globalConfig.env]

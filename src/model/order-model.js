@@ -62,6 +62,12 @@ const OrderDetailModel = (data) => {
     receipterPhone: data.receiverPhone,
     locationFrom: `${data.pickProvince || ''}${data.pickCity || ''}`,
     locationTo: `${data.receiptProvince || ''}${data.receiptCity || ''}`,
+    pickProvince: data.pickProvince || '',
+    receiptProvince: data.receiptProvince || '',
+    pickCity: data.pickCity || '',
+    receiptCity: data.receiptCity || '',
+    pickArea: data.pickArea || '',
+    receiptArea: data.receiptArea || '',
     pickTotalAddress: `${data.pickProvince || ''}${data.pickCity || ''}${data.pickArea || ''}${data.pickAddress || ''}`,
     receiptTotalAddress: `${data.receiptProvince || ''}${data.receiptCity || ''}${data.receiptArea || ''}${data.receiptAddress || ''}`,
     pickDateTime: data.pickDateTime || data.pickDate,
@@ -85,6 +91,12 @@ const OrderDetailModel = (data) => {
         pickerPhone: el.consignorPhone,
         receipter: el.receiver,
         receipterPhone: el.receiverPhone,
+        pickProvince: data.pickProvince || '',
+        receiptProvince: data.receiptProvince || '',
+        pickCity: data.pickCity || '',
+        receiptCity: data.receiptCity || '',
+        pickArea: data.pickArea || '',
+        receiptArea: data.receiptArea || '',
         pickTotalAddress: `${el.pickProvince || ''}${el.pickCity || ''}${el.pickArea || ''}${el.pickAddress || ''}`,
         receiptTotalAddress: `${el.receiptProvince || ''}${el.receiptCity || ''}${el.receiptArea || ''}${el.receiptAddress || ''}`,
         pickDateTime: el.pickDateTime || el.pickDate,
@@ -99,6 +111,9 @@ const OrderDetailModel = (data) => {
         goodsVolumeShow: `${formatFloat(el.volume, 2)}立方米`,
         // 物流信息
         // [not_start-未开始, take_order-司机接单, pickup-提货完成, arrived-到达目的地, singed-提货完成]
+        // logisticsStatus: 'take_order',
+        // logisticsStatus: 'pickup',
+        // logisticsStatus: 'arrived',
         logisticsStatus: el.logisticsStatus,
         remark: el.remark
       }
@@ -106,13 +121,13 @@ const OrderDetailModel = (data) => {
       if (detailObj.goodsName) {
         orderInfoTags.push(detailObj.goodsName)
       }
-      if (detailObj.quantity) {
+      if (detailObj.goodsQuantity) {
         orderInfoTags.push(detailObj.goodsQuantityShow)
       }
-      if (detailObj.grossWeight) {
+      if (detailObj.goodsWeight) {
         orderInfoTags.push(detailObj.goodsWeightShow)
       }
-      if (detailObj.volume) {
+      if (detailObj.goodsVolume) {
         orderInfoTags.push(detailObj.goodsVolumeShow)
       }
       detailObj.orderInfoTags = orderInfoTags
