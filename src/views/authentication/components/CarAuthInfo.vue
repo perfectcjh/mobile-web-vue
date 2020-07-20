@@ -1,6 +1,6 @@
 <template>
   <div class="auth-car-info-container">
-    <div style="margin-top: 20px;">
+    <div>
       <card>
         <div class="auth-photo-item-box">
           <auth-photo-item
@@ -289,6 +289,7 @@ export default {
 
 <style lang="stylus" scoped>
 	.auth-car-info-container {
+    padding: 20px 0px;
 
 		.auth-photo-item-box {
 			margin-top: 1px;
