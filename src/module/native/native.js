@@ -1,21 +1,25 @@
-import uni from 'uni'
 
-// 获取当前环境
-const getEnv = (callback) => {
-  uni.getEnv(callback)
-}
-
-// 与webview交互  option { action, params }
+// 原生交互调用方法
 const postMessage = (option) => {
-  uni.postMessage({
-    data: {
-      action: option.action,
-      params: option.params
+  const userAgent = navigator.userAgent
+  const isAndroid = userAgent.indexOf('Android') > -1 || userAgent.indexOf('Adr') > -1 // android终端
+  const isiOS = !!userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios终端
+
+  const action = option.action
+  const params = option.params
+
+  if (isiOS) {
+    if (window.webkit && window.webkit.messageHandlers) {
+      const jsonStr = JSON.stringify(params)
+      window.webkit.messageHandlers[action].postMessage(jsonStr)
     }
-  })
+  }
+  if (isAndroid) {
+    // window[action]
+  }
 }
 
-// 跳转返回  option { url }
+// 页面跳转
 const navigateTo = (option) => {
   postMessage({
     action: 'navigateTo',
@@ -31,27 +35,95 @@ const navigateBack = (option) => {
   })
 }
 
-// toast  option { String }
-const toast = (option) => {
+// 跳转返回root   option nil
+const navigateBackToRoot = (option) => {
   postMessage({
-    action: 'toast',
-    params: { message: option }
+    action: 'navigateBackToRoot',
+    params: option
   })
 }
 
-// notification  option { name, params }
-const notification = (option) => {
+// 跳转返回  option { page }
+const setStorage = (option) => {
   postMessage({
-    action: 'notification',
+    action: 'navigateBack',
+    params: option
+  })
+}
+
+// 跳转返回  option { page }
+const getStorage = (option) => {
+  postMessage({
+    action: 'navigateBack',
+    params: option
+  })
+}
+
+// 跳转返回  option { page }
+const removeStorage = (option) => {
+  postMessage({
+    action: 'navigateBack',
+    params: option
+  })
+}
+
+// 选择图片  option { count }
+const chooseImage = (option, callback) => {
+  window.didFinishChooseImage = (value) => {
+    const images = value.images.map(el => {
+      return 'data:image/png;base64,' + el
+    })
+    callback(images)
+  }
+  option.callback = 'didFinishChooseImage'
+  postMessage({
+    action: 'chooseImage',
+    params: option
+  })
+}
+
+// 拨打电话  option { phoneNumber }
+const makePhoneCall = (option) => {
+  postMessage({
+    action: 'makePhoneCall',
+    params: option
+  })
+}
+
+// 全局通知  option { name, value }
+const postNotification = (option) => {
+  postMessage({
+    action: 'postNotification',
+    params: option
+  })
+}
+
+// 设置导航栏  option { title }
+const setNavigationBar = (option) => {
+  postMessage({
+    action: 'setNavigationBar',
+    params: option
+  })
+}
+
+// log  option { title }
+const log = (option) => {
+  postMessage({
+    action: 'log',
     params: option
   })
 }
 
 export default {
-  getEnv,
-  postMessage,
   navigateTo,
   navigateBack,
-  toast,
-  notification
+  navigateBackToRoot,
+  setStorage,
+  getStorage,
+  removeStorage,
+  chooseImage,
+  makePhoneCall,
+  postNotification,
+  setNavigationBar,
+  log
 }

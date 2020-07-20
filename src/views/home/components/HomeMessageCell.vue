@@ -2,7 +2,7 @@
   <div class="home-message-cell-container">
     <div class="home-message-cell-card" @click.stop="handleClick">
       <div class="message-icon">
-        <img src="../../../static/driver/home/icon-home-message.png" mode="aspectFit" />
+        <img src="../../../static/driver/home/icon-home-message.png" />
       </div>
       <div class="message-title">您有{{ inviteList.length }}条未处理的邀请</div>
       <div class="message-subtitle">点击查看 ></div>

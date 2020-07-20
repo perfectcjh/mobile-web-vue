@@ -1,15 +1,15 @@
 <template>
   <div class="home-top-view-container">
     <div class="home-top-view-bg">
-      <img src="../../../static/driver/home/bg-home-top.png" mode="scaleToFill" />
+      <img src="../../../static/driver/home/bg-home-top.png" />
     </div>
     <div class="home-top-view-content">
       <div class="content-fee-box">
         <div class="content-fee-box-top">
           <div class="fee-name">已到账运费(元)</div>
           <div class="fee-show-price" @click.stop="handleSeePriceClick">
-            <img v-if="isShowPrice" src="../../../static/common/icon-can-see.png" mode="aspectFit" />
-            <img v-else src="../../../static/common/icon-not-see.png" mode="aspectFit" />
+            <img v-if="isShowPrice" src="../../../static/common/icon-can-see.png" />
+            <img v-else src="../../../static/common/icon-not-see.png" />
           </div>
         </div>
         <div v-if="isShowPrice" class="fee-money">{{ feeTotal.receivedFee || "0.00" }}</div>
@@ -61,6 +61,10 @@ export default {
 		.home-top-view-bg {
 			width: 100%;
 			height: 480px;
+
+			img {
+				object-fit: cover;
+			}
 		}
 
 		.home-top-view-content {

@@ -6,6 +6,8 @@ import * as account from './account'
 import * as upload from './upload'
 import * as ocr from './ocr.js'
 import * as customer from './customer.js'
+import * as search from './search.js'
+import * as car from './car.js'
 
 export default {
   ...app,
@@ -15,5 +17,7 @@ export default {
   ...account,
   ...upload,
   ...ocr,
-  ...customer
+  ...customer,
+  ...search,
+  ...car
 }

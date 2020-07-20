@@ -3,7 +3,6 @@ import { Dialog } from 'vant'
 const show = ({ title, message, isConfirm, onConfirm, onCancel }) => {
   if (isConfirm) {
     Dialog.confirm({
-      width: 300,
       confirmButtonColor: '#00ADC7',
       title: title || '提示',
       message: message
@@ -16,7 +15,6 @@ const show = ({ title, message, isConfirm, onConfirm, onCancel }) => {
     })
   } else {
     Dialog.alert({
-      width: 300,
       confirmButtonColor: '#00ADC7',
       title: title || '提示',
       message: message

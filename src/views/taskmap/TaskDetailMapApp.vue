@@ -1,13 +1,5 @@
 <template>
   <div class="task-detail-map-container">
-    <div class="nav-bar" :style="navbarStyle">
-      <van-nav-bar
-        title="任务详情"
-        left-arrow
-        :z-index="998"
-        @click-left="handleBackClick"
-      />
-    </div>
     <div class="map-container">
       <MapView
         ref="mapView"
@@ -21,8 +13,8 @@
     <div class="task-detail-map-info-container" :style="detailInfoStyle" @touchstart.stop="handleTouchStart" @touchmove.stop="handleTouchMove" @touchend.stop="handleTouchEnd">
       <div class="task-detail-map-info-button" @click.stop="handleInfoClick">
         <div class="task-detail-map-info-button-img">
-          <img v-if="!isShowDetailInfo" src="../../assets/common/icon-view-show.png" mode="aspectFit" />
-          <img v-if="isShowDetailInfo" src="../../assets/common/icon-view-hide.png" mode="aspectFit" />
+          <img v-if="!isShowDetailInfo" src="../../assets/common/icon-view-show.png" />
+          <img v-if="isShowDetailInfo" src="../../assets/common/icon-view-hide.png" />
         </div>
       </div>
       <task-detail-map-info-view
@@ -44,18 +36,17 @@
 <script>
 import TaskDetailMapTopView from './components/TaskDetailMapTopView.vue'
 import TaskDetailMapInfoView from './components/TaskDetailMapInfoView.vue'
-import MapView from '@/components/Map/MapView.vue'
+import MapView from '@/components/map/MapView.vue'
 import { OrderDetailModel } from '@/model/order-model.js'
 
 export default {
   components: { TaskDetailMapTopView, TaskDetailMapInfoView, MapView },
   data () {
     return {
-      platform: '',
       isShowDetailInfo: false,
+      detailInfoStyle: '',
       orderId: '',
       fileCode: '',
-      token: '',
       pageData: {},
       currentAddress: '',
       locationObj: {
@@ -71,71 +62,62 @@ export default {
       }
     }
   },
-  computed: {
-    detailInfoStyle () {
-      const { isTouch, moveY, detailHeight } = this.touchObj
-      if (isTouch && (moveY > 50 || moveY < -50)) {
-        return `height: ${detailHeight}px`
-      } else {
-        return this.isShowDetailInfo ? 'height: 85%;' : 'height: 42%;'
-      }
-    },
-    navbarStyle () {
-      const style = this.platform === 'android' ? 'padding-top: 22px;' : 'padding-top: 0px;'
-      return style
-    }
-  },
-  created () {
-    this.$native.getEnv((res) => {
-      console.log('UniAppJSBridgeReady', res)
-    })
-    this.platform = this.$route.query.platform
-    this.orderId = this.$route.query.id
-    this.token = this.$route.query.token
-    console.log(JSON.stringify(this.$route.query))
-  },
   mounted () {
+    this.$native.setNavigationBar({ title: '任务详情' })
+
+    this.setDetailInfoStyle()
+
+    this.orderId = this.$route.query.orderId || this.$route.query.id
     this.loadData()
   },
   methods: {
+    setDetailInfoStyle () {
+      if (this.touchObj.isTouch) {
+        this.detailInfoStyle = `height: ${this.touchObj.detailHeight}px`
+      } else {
+        this.detailInfoStyle = this.isShowDetailInfo ? 'height: 98%;' : 'height: 35%;'
+      }
+    },
     handleTouchStart (event) {
-      this.touchObj.isTouch = true
-      if (!event.touches) { return }
-      const touch = event.touches[0]
-      this.touchObj.startY = touch.clientY
+      event.preventDefault()
+      if (event.touches.length === 1) {
+        this.touchObj.isTouch = true
+        const touch = event.touches[0]
+
+        this.touchObj.startY = touch.clientY
+      }
     },
     handleTouchMove (event) {
-      if (!event.touches) { return }
-      const touch = event.touches[0]
-      const currentY = touch.clientY
-      const moveY = this.touchObj.currentY - this.touchObj.startY
+      event.preventDefault()
+      if (event.touches.length === 1) {
+        const touch = event.touches[0]
 
-      const windowHeight = document.documentElement.clientHeight || document.body.clientHeight
-      const startHeight = this.isShowDetailInfo ? windowHeight * 0.85 : windowHeight * 0.42
-      let detailHeight = startHeight - moveY
-      if (detailHeight > windowHeight * 0.85) {
-        detailHeight = windowHeight * 0.85
-      }
-      if (detailHeight < windowHeight * 0.42) {
-        detailHeight = windowHeight * 0.42
-      }
-      console.log('moveY', moveY, 'height', detailHeight, 'windowHeight', windowHeight)
+        this.touchObj.currentY = touch.clientY
+        this.touchObj.moveY = this.touchObj.currentY - this.touchObj.startY
 
-      this.touchObj.currentY = currentY
-      this.touchObj.moveY = moveY
-      this.touchObj.detailHeight = detailHeight
+        const windowHeight = document.documentElement.clientHeight || document.body.clientHeight
+        const startHeight = this.isShowDetailInfo ? windowHeight * 0.98 : windowHeight * 0.35
+        let detailHeight = startHeight - this.touchObj.moveY
+        if (detailHeight >= windowHeight * 0.98) {
+          detailHeight = windowHeight * 0.98
+        }
+        if (detailHeight <= windowHeight * 0.35) {
+          detailHeight = windowHeight * 0.35
+        }
+        this.touchObj.detailHeight = detailHeight
+      }
+      this.setDetailInfoStyle()
     },
     handleTouchEnd () {
       this.touchObj.isTouch = false
-      const { detailHeight } = this.touchObj
 
-      const windowHeight = document.documentElement.clientHeight || document.body.clientHeight
-      const flagHeight = windowHeight * 0.6
-      if (detailHeight > flagHeight) {
-        this.isShowDetailInfo = true
-      } else {
+      if (this.isShowDetailInfo && this.touchObj.moveY > 100) {
         this.isShowDetailInfo = false
       }
+      if (!this.isShowDetailInfo && this.touchObj.moveY < -100) {
+        this.isShowDetailInfo = true
+      }
+      this.setDetailInfoStyle()
     },
     getLocation () {
       this.$refs.mapView.getCurrentLocation()
@@ -153,8 +135,7 @@ export default {
     },
     async loadData () {
       const params = {
-        id: this.orderId,
-        token: this.token || ''
+        id: this.orderId
       }
       this.$toast.loading()
       const { code, data } = await this.$api.getOrderDetail(params)
@@ -177,8 +158,7 @@ export default {
     },
     async reloadData () {
       const params = {
-        id: this.orderId,
-        token: this.token || ''
+        id: this.orderId
       }
       this.$toast.loading()
       const { code, data } = await this.$api.getOrderDetail(params)
@@ -195,21 +175,33 @@ export default {
     },
     handleInfoClick () {
       this.isShowDetailInfo = !this.isShowDetailInfo
+      this.setDetailInfoStyle()
     },
     handleBackClick () {
-      this.$native.navigateBack()
+      this.$uniNative.navigateBack()
     },
     handleSignatureClick () {
       if (!this.checkLocation()) { return }
       this.$native.navigateTo({
-        url: `/pages/driver/task/TaskCheckFinish?id=${this.pageData.orderId}&longitude=${this.locationObj.longitude}&latitude=${this.locationObj.latitude}&location=${this.currentAddress}`
+        url: '/taskCheckFinish',
+        params: {
+          orderId: this.pageData.orderId,
+          longitude: `${this.locationObj.longitude}`,
+          latitude: `${this.locationObj.latitude}`,
+          location: this.currentAddress
+        }
       })
     },
     handleUploadClick () {
       if (!this.checkLocation()) { return }
-      const subIds = this.pageData.detailList.map(el => el.orderId)
       this.$native.navigateTo({
-        url: `/pages/driver/task/UploadTaskPhoto?id=${this.pageData.orderId}&subIds=${subIds.join(',')}&logisticsStatus=${this.pageData.logisticsStatus}&longitude=${this.locationObj.longitude}&latitude=${this.locationObj.latitude}&location=${this.currentAddress}`
+        url: '/taskUploadPhoto',
+        params: {
+          orderId: this.pageData.orderId,
+          longitude: `${this.locationObj.longitude}`,
+          latitude: `${this.locationObj.latitude}`,
+          location: this.currentAddress
+        }
       })
     },
     handleFinishClick () {
@@ -240,15 +232,17 @@ export default {
         latitude: this.locationObj.latitude,
         longitude: this.locationObj.longitude,
         location: this.currentAddress,
-        fileCode: this.fileCode,
-        token: this.token
+        fileCode: this.fileCode
       }
       this.$toast.loading()
       const { code } = await this.$api.orderPickupCompleted(params)
       this.$toast.clear()
       if (code === 200) {
-        this.$native.toast('提货成功')
-        this.handleSuccess()
+        this.$toast('提货成功')
+        this.reloadData()
+        setTimeout(() => {
+          this.$native.navigateBackToRoot()
+        }, 1500)
       }
     },
     // 卸货完成
@@ -259,52 +253,22 @@ export default {
         latitude: this.locationObj.latitude,
         longitude: this.locationObj.longitude,
         location: this.currentAddress,
-        fileCode: this.fileCode,
-        token: this.token
+        fileCode: this.fileCode
       }
       this.$toast.loading()
       const { code } = await this.$api.orderReceiptCompleted(params)
       this.$toast.clear()
       if (code === 200) {
-        this.$native.toast('卸货成功')
-        // this.handleSuccess()
+        this.$toast('卸货成功')
         this.reloadData()
         setTimeout(() => {
           this.handleSignatureClick()
         }, 1500)
       }
-    },
-    handleSuccess () {
-      setTimeout(() => {
-        this.$native.notification({
-          name: 'taskNeedRefresh'
-        })
-        this.$native.navigateBack({
-          delta: 3
-        })
-      }, 1500)
     }
   }
 }
 </script>
-
-<style lang="stylus">
-.van-nav-bar {
-  height: 92px;
-  line-height: 92px;
-  // background $linear-gradient-bg-theme
-  background-color: $color-white;
-}
-.van-nav-bar .van-icon {
-  color: $color-text-black;
-  font-size: 32px;
-}
-.van-nav-bar__title {
-  color: $color-text-black;
-  font-size: 32px;
-  font-weight: bold;
-}
-</style>>
 
 <style lang="stylus" scoped>
   .task-detail-map-container {
@@ -314,17 +278,6 @@ export default {
     left: 0px;
     right: 0px;
     padding: 0px;
-
-    .nav-bar {
-      position: fixed;
-      top: 0px;
-      left: 0px;
-      right: 0px;
-      z-index: 998;
-      background-color: $color-white;
-      // background $linear-gradient-bg-theme
-      // padding-top 44px
-    }
 
     .map-container {
       position: absolute;
@@ -417,4 +370,4 @@ export default {
 			}
 		}
   }
-</style>>
+</style>

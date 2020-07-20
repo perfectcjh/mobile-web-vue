@@ -2,29 +2,38 @@
   <div class="home-container">
     <!-- <navbar-normal title="首页" :isRoot="true"/> -->
     <div class="list-view-container">
-      <div class="list-view">
-        <div>
-          <home-top-view
-            :feeTotal="feeTotal"
-          />
-        </div>
-        <div style="margin-top: 30px;">
-          <home-message-cell
-            :inviteList="inviteListData"
-            @click="handleMessageClick"
-          />
-        </div>
-        <div v-for="(item, index) in listData" :key="index" @click.stop="handleItemClick(item)" class="list-view-item">
-          <home-header
-            v-if="item.componentType === 'header'"
-            :title="item.title"
-          />
-          <home-list-item-order
-            v-else
-            :itemData="item"
-          />
-        </div>
-      </div>
+      <van-pull-refresh v-model="isRefresh" @refresh="loadData">
+        <van-list
+          v-model="isLoadMore"
+          :finished="isNoMoreData"
+          finished-text="没有更多了"
+          @load="loadMoreData"
+        >
+          <div class="list-view">
+            <div>
+              <home-top-view
+                :feeTotal="feeTotal"
+              />
+            </div>
+            <div style="margin-top: 30px;">
+              <home-message-cell
+                :inviteList="inviteListData"
+                @click="handleMessageClick"
+              />
+            </div>
+            <div v-for="(item, index) in listData" :key="index" @click.stop="handleItemClick(item)" class="list-view-item">
+              <home-header
+                v-if="item.componentType === 'header'"
+                :title="item.title"
+              />
+              <home-list-item-order
+                v-else
+                :itemData="item"
+              />
+            </div>
+          </div>
+        </van-list>
+      </van-pull-refresh>
     </div>
   </div>
 </template>
@@ -41,6 +50,10 @@ export default {
   components: { HomeListItemOrder, HomeHeader, HomeTopView, HomeMessageCell },
   data () {
     return {
+      isRefresh: false,
+      isLoadMore: false,
+      isNoMoreData: false,
+      page: 1,
       feeTotal: {},
       inviteListData: [],
       transportListData: [],
@@ -107,7 +120,7 @@ export default {
       const params = {
         page: 1,
         size: 100,
-        departStatus: ['2', '3']
+        departStatuses: ['2', '3']
       }
       const { code, data } = await this.$api.getOrderList(params)
       if (code === 200) {
@@ -125,26 +138,29 @@ export default {
         departStatuses: ['1']
       }
       const { code, data } = await this.$api.getOrderList(params)
+      this.isRefresh = false
       if (code === 200) {
+        this.page = 1
         this.createListData = OrderListModel(data)
-        // this.mescroll.endBySize(this.createListData.length, totalData.total)
-      } else {
-        // this.mescroll.endSuccess()
       }
     },
-    async loadMoreData (page) {
-      console.log('loadMoreData', page.num + 1)
+    async loadMoreData () {
+      if (this.isLoadMore) { return }
+      console.log('loadMoreData', this.page + 1)
       const params = {
-        page: page.num + 1,
+        page: this.page + 1,
         size: 10,
-        departStatus: '1'
+        departStatuses: ['1']
       }
       const { code, data } = await this.$api.getOrderList(params)
+      this.isLoadMore = false
       if (code === 200) {
         this.createListData = this.createListData.concat(OrderListModel(data))
-        // this.mescroll.endBySize(this.createListData.length, totalData.total)
-      } else {
-        // this.mescroll.endSuccess()
+
+        this.page = this.page + 1
+        if (this.createListData.length > data.pageNum) {
+          this.isNoMoreData = false
+        }
       }
     },
     handleItemClick (item) {
@@ -169,15 +185,11 @@ export default {
 
 <style lang="stylus" scoped>
 	.home-container {
+    width: 100%;
 		position: relative;
 
 		.list-view-container {
-			position: absolute;
-			z-index: 1;
-			left: 0px;
-			right: 0px;
-			top: 0px;
-			bottom: 0px;
+      width: 100%;
 		}
 
 		.list-view {

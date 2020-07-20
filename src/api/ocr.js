@@ -2,10 +2,10 @@ import httpRequest from '@/module/request/http-request.js'
 
 const ipConfig = require('../config/ip.config.js')
 const api = {
-  ocrBusinessLicense: ipConfig.api_common + '/api/ocr/ocrBusinessLicense',
-  ocrDriverLicense: ipConfig.api_common + '/api/ocr/ocrDriverLicense',
-  ocrIdCard: ipConfig.api_common + '/api/ocr/ocrIdCard',
-  ocrVehicleLicense: ipConfig.api_common + '/api/ocr/ocrVehicleLicense'
+  ocrBusinessLicense: ipConfig.api_basic + '/api-common/v1/IOcrController/ocrBusinessLicense',
+  ocrDriverLicense: ipConfig.api_basic + '/api-common/v1/IOcrController/ocrDriverLicense',
+  ocrIdCard: ipConfig.api_basic + '/api-common/v1/IOcrController/ocrIdCard',
+  ocrVehicleLicense: ipConfig.api_basic + '/api-common/v1/IOcrController/ocrVehicleLicense'
 }
 
 // 营业执照识别接口 params { imgUrl }

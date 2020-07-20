@@ -16,7 +16,7 @@
       <div v-if="item.logisticsStatus === 'take_order'" class="item-info-location-view">
         <div class="header-item-view">
           <div class="header-item-icon">
-            <img src="../../../assets/common/icon-task-get-goods.png" object-fit="cover" />
+            <img src="../../../assets/common/icon-task-get-goods.png" />
           </div>
           <div class="header-item-info-view">
             <div class="item-info-city">{{ item.pickProvince }} {{ item.pickCity }}</div>
@@ -24,7 +24,7 @@
             <div class="item-info-time">{{ item.pickDateTime }}</div>
           </div>
           <div class="header-item-phone" @click.stop="makePhoneCallToPicker">
-            <img src="../../../assets/common/icon-task-phone-theme.png" object-fit="cover" />
+            <img src="../../../assets/common/icon-task-phone-theme.png" />
           </div>
         </div>
         <div class="item-view-sep-line"></div>
@@ -41,7 +41,7 @@
         <div class="item-view-sep-line"></div>
         <div class="header-item-view">
           <div class="header-item-icon">
-            <img src="../../../assets/common/icon-task-finish-goods.png" object-fit="cover" />
+            <img src="../../../assets/common/icon-task-finish-goods.png" />
           </div>
           <div class="header-item-info-view">
             <div class="item-info-city">{{ item.receiptProvince }} {{ item.receiptCity }}</div>
@@ -49,7 +49,7 @@
             <div class="item-info-time">{{ item.receiptDateTime }}</div>
           </div>
           <div class="header-item-phone" @click.stop="makePhoneCallToReceipter">
-            <img src="../../../assets/common/icon-task-phone-theme.png" object-fit="cover" />
+            <img src="../../../assets/common/icon-task-phone-theme.png" />
           </div>
         </div>
       </div>
@@ -95,7 +95,7 @@ export default {
       this.$emit('locationClick')
     },
     makePhoneCallToPicker () {
-      this.$native.postMessage({
+      this.$uniNative.postMessage({
         action: 'makePhoneCall',
         params: {
           phoneNumber: this.itemData.pickerPhone
@@ -103,7 +103,7 @@ export default {
       })
     },
     makePhoneCallToReceipter () {
-      this.$native.postMessage({
+      this.$uniNative.postMessage({
         action: 'makePhoneCall',
         params: {
           phoneNumber: this.itemData.receipterPhone
@@ -187,14 +187,14 @@ export default {
 
 					.item-view-other-title {
 						color: $color-text-gray;
-						font-size: $font-15;
+						font-size: $font-13;
 						line-height: 1.5;
 					}
 
 					.item-view-other-des {
 						flex: 1;
 						color: $color-text-black;
-						font-size: $font-15;
+						font-size: $font-13;
 						line-height: 1.5;
 					}
 				}
@@ -215,14 +215,14 @@ export default {
 
 						.item-info-city {
 							color: $color-text-black;
-							font-size: $font-17;
+							font-size: $font-15;
 							font-weight: bold;
 						}
 
 						.item-info-address {
 							margin-top: 36px;
 							color: $color-text-black;
-							font-size: $font-15;
+							font-size: $font-13;
 							line-height: 30px;
 						}
 
@@ -264,7 +264,7 @@ export default {
 						padding: 0px 24px;
 						background-color: $color-lighttheme;
 						color: $color-darktheme;
-						font-size: $font-15;
+						font-size: $font-13;
 						height: 80px;
 						line-height: 80px;
 						margin-bottom: 18px;

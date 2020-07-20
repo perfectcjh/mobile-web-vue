@@ -1,10 +1,6 @@
-// import Vue from 'vue'
 import HttpClient from './http-client.js'
-// import store from '@/store'
-// import notification from 'ant-design-vue/es/notification'
-// import message from 'ant-design-vue/es/message'
-// import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { HttpStatus, HttpResponseCode, HttpRequestLog, ShowErrorMessage } from './http-constant.js'
+import UserModel from '@/model/user-model.js'
 
 const httpClient = new HttpClient()
 
@@ -13,11 +9,30 @@ const httpRequestHeader = (option) => {
   const headers = {
     appCode: 'PUDS'
   }
-  // if (UserModel.isLogin()) {
-  // 	const token = UserModel.getToken()
-  // 	header.token = token
-  // }
+  if (UserModel.isLogin()) {
+    headers.token = UserModel.getToken()
+  }
   return Object.assign({}, headers, option.headers)
+}
+
+const httpRequestParams = (option) => {
+  if (option.method === 'POST') {
+    const params = {}
+    if (option.data) {
+      if (option.data.page) {
+        params.page = option.data.page
+      }
+      if (option.data.size) {
+        params.size = option.data.size
+      }
+      if (option.data.id) {
+        params.id = option.data.id
+      }
+    }
+    return params
+  } else {
+    return option.data
+  }
 }
 
 // 请求参数处理
@@ -31,19 +46,15 @@ const httpRequestData = (option) => {
 // 业务请求类：httpRequest
 const httpRequest = (option) => {
   const headers = httpRequestHeader(option)
+  const params = httpRequestParams(option)
   const data = httpRequestData(option)
-  headers.token = '28b4b38fadc62ee8e4e163e26fde74a2'
-  if (data.token) {
-    headers.token = data.token
-  }
-  console.log('headers', JSON.stringify(headers))
   return new Promise((resolve) => {
     httpClient.request({
       url: option.url,
       method: option.method,
       headers: headers,
       data: data,
-      params: data
+      params: params
     }).then(res => {
       HttpRequestLog(option.url, data, res.data)
       handleResponse(res, resolve)

@@ -2,7 +2,7 @@
   <div class="task-detail-map-top-view-container">
     <div class="top-view-card">
       <div class="top-view-back-button">
-        <!-- <image src="/static/common/icon-arrow-left-black.png" mode="aspectFit"></image> -->
+        <!-- <image src="/static/common/icon-arrow-left-black.png"></image> -->
       </div>
       <div class="top-view-info-container">
         <div class="top-view-info-title">100</div>

@@ -1,5 +1,6 @@
+
 module.exports = ({ file }) => {
-  let remUnit
+  let remUnit = 0
   if (file && file.dirname && file.dirname.indexOf('vant') > -1) {
     remUnit = 37.5
   } else {
@@ -11,8 +12,8 @@ module.exports = ({ file }) => {
       'postcss-import': {},
       'autoprefixer': {},
       'postcss-px2rem-exclude': {
-        remUnit: remUnit,
-        exclude: /node_modules|folder_name/i // 忽略node_modules目录下的文件
+        remUnit: remUnit
+        // exclude: /node_modules|vant/i // 忽略node_modules目录下的文件
       }
     }
   }

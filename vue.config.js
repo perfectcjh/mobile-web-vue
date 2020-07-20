@@ -11,11 +11,11 @@ const isProd = process.env.NODE_ENV === 'production'
 const assetsCDN = {
   // webpack build externals
   externals: {
-    uni: 'uni'
     // vue: 'Vue',
     // 'vue-router': 'VueRouter',
     // vuex: 'Vuex',
     // axios: 'axios'
+    uni: 'uni'
   },
   css: [],
   // https://unpkg.com/browse/vue@2.6.10/

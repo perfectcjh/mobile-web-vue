@@ -11,16 +11,16 @@
         <div class="order-location-view">
           <div class="order-location">
             <div class="order-location-tag">
-              <img src="../../../static/common/icon-location-green.png" mode="aspectFit" />
+              <img src="../../../static/common/icon-location-green.png" />
             </div>
             <div class="order-location-text">{{ itemData.locationFrom }}</div>
           </div>
           <div class="order-location-arrow">
-            <img src="../../../static/common/icon-location-line.png" mode="aspectFit" />
+            <img src="../../../static/common/icon-location-line.png" />
           </div>
           <div class="order-location right">
             <div class="order-location-tag">
-              <img src="../../../static/common/icon-location-orange.png" mode="aspectFit" />
+              <img src="../../../static/common/icon-location-orange.png" />
             </div>
             <div class="order-location-text">{{ itemData.locationTo }}</div>
           </div>

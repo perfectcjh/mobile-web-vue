@@ -18,4 +18,7 @@
   font-size: $font-14;
   line-height: 1.35;
 }
+html,body {
+  height: 100%;
+}
 </style>

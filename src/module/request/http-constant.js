@@ -1,5 +1,7 @@
 // import { Toast } from 'vant'
-import native from '@/module/native/native'
+// import native from '@/module/native/native'
+import { Toast } from 'vant'
+import Native from '@/module/native/native.js'
 
 // http状态吗
 const HttpStatus = {
@@ -26,6 +28,7 @@ const HttpResponseCode = {
 const HttpRequestLog = (url, data, res) => {
   console.log('request', url, JSON.stringify(data))
   console.log('response:', JSON.stringify(res))
+  Native.log({ 'log': JSON.stringify(data), 'res': JSON.stringify(res) })
 }
 
 // 错误提示弹窗
@@ -38,7 +41,8 @@ const ShowErrorMessage = (message) => {
     // 	icon: 'none',
     // 	duration: 1500
     // })
-    native.toast(message)
+    Toast(message)
+    // native.toast(message)
   })
 }
 

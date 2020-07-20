@@ -2,11 +2,12 @@ import httpRequest from '@/module/request/http-request.js'
 
 const ipConfig = require('../config/ip.config.js')
 const api = {
-  login: ipConfig.api_common + '/biz/user/userLogin',
-  smsLogin: ipConfig.api_common + '/biz/user/userMessageLogin',
-  getSmsCaptcha: ipConfig.api_common + '/biz/usermessage/sendMessage',
-  getLoginUserInfo: ipConfig.api_common + '/biz/user/getLoginUserInfo',
-  logout: ipConfig.api_common + '/biz/user/Logout'
+  login: ipConfig.api_user + '/api-user/v1/IBizUserController/userLogin',
+  smsLogin: ipConfig.api_user + '/api-user/v1/IBizUserController/userMessageLogin',
+  getSmsCaptcha: ipConfig.api_user + '/api-user/v1/IBizUserMessageController/sendMessage',
+  getLoginUserInfo: ipConfig.api_puds + '/api-puds/v1/IBizUserController/getLoginUserInfo',
+  logout: ipConfig.api_user + '/api-user/v1/IBizUserController/Logout',
+  updateUserInfo: ipConfig.api_user + '/api-user/v1/IBizUserController/updateUser'
 }
 
 // 登录
@@ -37,6 +38,14 @@ export const getSmsCaptcha = (params) => {
 export const getLoginUserInfo = (params) => {
   return httpRequest.post({
     url: api.getLoginUserInfo,
+    data: params
+  })
+}
+
+// 退出登录
+export const logout = (params) => {
+  return httpRequest.post({
+    url: api.logout,
     data: params
   })
 }
