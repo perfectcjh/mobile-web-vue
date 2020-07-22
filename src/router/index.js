@@ -93,6 +93,11 @@ const routes = [
     path: '/searchBank',
     name: 'SearchBank',
     component: () => import('../views/search/SearchBank.vue')
+  },
+  {
+    path: '/driverContract',
+    name: 'DriverContract',
+    component: () => import('../views/contract/DriverContract.vue')
   }
 ]
 

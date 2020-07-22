@@ -1,7 +1,7 @@
 // import { Toast } from 'vant'
 // import native from '@/module/native/native'
 import { Toast } from 'vant'
-import Native from '@/module/native/native.js'
+// import Native from '@/module/native/native.js'
 
 // http状态吗
 const HttpStatus = {

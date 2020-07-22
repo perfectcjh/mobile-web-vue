@@ -75,7 +75,7 @@ export default {
       if (this.touchObj.isTouch) {
         this.detailInfoStyle = `height: ${this.touchObj.detailHeight}px`
       } else {
-        this.detailInfoStyle = this.isShowDetailInfo ? 'height: 98%;' : 'height: 35%;'
+        this.detailInfoStyle = this.isShowDetailInfo ? 'height: 95%;' : 'height: 35%;'
       }
     },
     handleTouchStart (event) {
@@ -96,10 +96,10 @@ export default {
         this.touchObj.moveY = this.touchObj.currentY - this.touchObj.startY
 
         const windowHeight = document.documentElement.clientHeight || document.body.clientHeight
-        const startHeight = this.isShowDetailInfo ? windowHeight * 0.98 : windowHeight * 0.35
+        const startHeight = this.isShowDetailInfo ? windowHeight * 0.95 : windowHeight * 0.35
         let detailHeight = startHeight - this.touchObj.moveY
-        if (detailHeight >= windowHeight * 0.98) {
-          detailHeight = windowHeight * 0.98
+        if (detailHeight >= windowHeight * 0.95) {
+          detailHeight = windowHeight * 0.95
         }
         if (detailHeight <= windowHeight * 0.35) {
           detailHeight = windowHeight * 0.35
