@@ -2,12 +2,12 @@ import httpRequest from '@/module/request/http-request.js'
 
 const ipConfig = require('../config/ip.config.js')
 const api = {
-  getOrderList: ipConfig.api_puds + '/api/forward/waybillDepart/getPage',
-  getOrderDetail: ipConfig.api_puds + '/api/forward/waybillDepart/getDetail',
-  taskOrder: ipConfig.api_puds + '/api/forward/driverOperate/takingOrdersByDriver',
-  orderPickupCompleted: ipConfig.api_puds + '/api/forward/driverOperate/pickupCompleted',
-  orderReceiptCompleted: ipConfig.api_puds + '/api/forward/driverOperate/arriveDestination',
-  orderSignCompleted: ipConfig.api_puds + '/api/forward/driverOperate/signCompleted'
+  getOrderList: ipConfig.api_outdoor + '/api-outdoor/v1/waybillDepart/getPage',
+  getOrderDetail: ipConfig.api_outdoor + '/api-outdoor/v1/waybillDepart/getDetail',
+  taskOrder: ipConfig.api_outdoor + '/api-outdoor/v1/driverOperate/takingOrdersByDriver',
+  orderPickupCompleted: ipConfig.api_outdoor + '/api-outdoor/v1/driverOperate/pickupCompleted',
+  orderReceiptCompleted: ipConfig.api_outdoor + '/api-outdoor/v1/driverOperate/arriveDestination',
+  orderSignCompleted: ipConfig.api_outdoor + '/api-outdoor/v1/driverOperate/signCompleted'
 }
 
 // 订单列表

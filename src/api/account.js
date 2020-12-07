@@ -2,9 +2,9 @@ import httpRequest from '@/module/request/http-request.js'
 
 const ipConfig = require('../config/ip.config.js')
 const api = {
-  getDriverFeeList: ipConfig.api_puds + '/api/forward/driverOperate/getDriverFeeDetailList',
-  getDriverFeeDetail: ipConfig.api_puds + '/api/forward/driverOperate/getDriverFeeDetail',
-  getDriverFeeTotal: ipConfig.api_puds + '/api/forward/driverOperate/getDriverStatisticsFee',
+  getDriverFeeList: ipConfig.api_outdoor + '/api-outdoor/v1/driverOperate/getDriverFeeDetailList',
+  getDriverFeeDetail: ipConfig.api_outdoor + '/api-outdoor/v1/driverOperate/getDriverFeeDetail',
+  getDriverFeeTotal: ipConfig.api_outdoor + '/api-outdoor/v1/driverOperate/getDriverStatisticsFee',
   getUserBankCardList: ipConfig.api_user + '/api-user/v1/IUserBankCardController/getBankCardList',
   addUserBankCard: ipConfig.api_user + '/api-user/v1/IUserBankCardController/saveBankCard',
   updateUserBankCard: ipConfig.api_user + '/api-user/v1/IUserBankCardController/updateUserBankCard',

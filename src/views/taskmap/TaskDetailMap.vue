@@ -73,7 +73,6 @@ export default {
   computed: {
     navbarStyle () {
       const style = this.platform === 'android' ? 'padding-top: 22px;' : 'padding-top: 22px;'
-      alert(style)
       return style
     }
   },
